@@ -9,7 +9,12 @@ Both projects use HTML, CSS, and vanilla JavaScript. The work follows the writte
 
 ## Work plan
 
-Each lab will be developed in small, reviewable milestones on one feature branch. The scheduled work is planned for Sunday and Monday, with one meaningful commit per lab on each day. After implementation, both projects will be reviewed, the commit history checked, and the feature branch merged into `main` once.
+Both labs will be developed in small, reviewable milestones on the single feature branch `feat/web-labs`. The current schedule (Moscow time) is:
+
+- Saturday, 17 October: Books shop commits at 12:17, 14:58, and 17:42; ToDo commit at 13:32.
+- Monday, 19 October: Books shop final commit at 08:41; ToDo commits at 13:07, 16:24, and 19:36.
+
+Each scheduled run should produce one real, reviewable commit and request an independent subagent review. No artificial bugs or activity are introduced. The final ToDo step checks both projects, prepares GitHub Pages, and merges the one feature branch into `main` once if verification passes.
 
 ## Projects
 
