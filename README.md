@@ -16,6 +16,11 @@ Both labs will be developed in small, reviewable milestones on the single featur
 
 Each scheduled run should produce one real, reviewable commit and request an independent subagent review. No artificial bugs or activity are introduced. The final ToDo step checks both projects, prepares GitHub Pages, and merges the one feature branch into `main` once if verification passes.
 
+## ToDo progress
+
+- Commit 1: dynamic page shell, DOM-rendered task list, and task creation with a title and date. See [`lab2-todo/README.md`](lab2-todo/README.md) for the current stage and run instructions.
+- Later commits: editing and deleting tasks, completion state, status filtering, search, drag-and-drop ordering, and localStorage persistence.
+
 ## Projects
 
 The individual lab READMEs will document how to run each project, its features, and what to demonstrate during the defense.
