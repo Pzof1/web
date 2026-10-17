@@ -38,7 +38,10 @@
 
       <section class="cart section-wrap" id="cart" aria-labelledby="cart-title">
         <div class="section-heading"><div><p class="eyebrow">Ваш выбор</p><h2 id="cart-title">Корзина</h2></div></div>
-        <p class="cart-placeholder" id="cart-status" role="status" aria-live="polite">Здесь появятся выбранные книги.</p>
+        <p class="cart-placeholder" id="cart-status">Корзина пуста. Добавьте книги из каталога, чтобы собрать заказ.</p>
+        <ul class="cart-items" id="cart-items" aria-label="Книги в корзине"></ul>
+        <div class="cart-summary" hidden><span>Итого</span><strong id="cart-total">0 ₽</strong></div>
+        <p class="cart-feedback" id="cart-feedback" role="status" aria-live="polite" aria-atomic="true"></p>
       </section>
 
       <section class="about section-wrap" id="about" aria-labelledby="about-title">
