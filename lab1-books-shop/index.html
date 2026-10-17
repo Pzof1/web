@@ -17,7 +17,7 @@
         <a href="#catalog">Каталог</a>
         <a href="#about">О магазине</a>
       </nav>
-      <a class="cart-link" href="#cart">Корзина <span aria-hidden="true">·</span> <span id="cart-count">0</span></a>
+      <a class="cart-link" href="#cart">Корзина <span aria-hidden="true">·</span> <span id="cart-count" aria-label="Товаров в корзине" aria-live="polite">0</span></a>
     </header>
 
     <main id="top">
@@ -33,12 +33,12 @@
           <div><p class="eyebrow">Подборка</p><h2 id="catalog-title">Книги</h2></div>
           <p class="muted">Небольшая библиотека для больших впечатлений</p>
         </div>
-        <div class="book-grid" id="book-list" aria-live="polite"></div>
+        <div class="book-grid" id="book-list"></div>
       </section>
 
       <section class="cart section-wrap" id="cart" aria-labelledby="cart-title">
         <div class="section-heading"><div><p class="eyebrow">Ваш выбор</p><h2 id="cart-title">Корзина</h2></div></div>
-        <p class="cart-placeholder">Здесь появятся выбранные книги.</p>
+        <p class="cart-placeholder" id="cart-status" role="status" aria-live="polite">Здесь появятся выбранные книги.</p>
       </section>
 
       <section class="about section-wrap" id="about" aria-labelledby="about-title">
