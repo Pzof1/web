@@ -4,6 +4,9 @@ const cartStatus = document.querySelector("#cart-status");
 const cartItems = document.querySelector("#cart-items");
 const cartTotal = document.querySelector("#cart-total");
 const cartFeedback = document.querySelector("#cart-feedback");
+const checkoutOpen = document.querySelector("#checkout-open");
+const orderForm = document.querySelector("#order-form");
+const formFeedback = document.querySelector("#form-feedback");
 const cart = new Map();
 const storageKey = "leaf-bookstore-cart";
 
@@ -54,6 +57,12 @@ function renderCart() {
   cartStatus.hidden = count > 0;
   cartItems.hidden = count === 0;
   cartTotal.closest(".cart-summary").hidden = count === 0;
+  checkoutOpen.disabled = count === 0;
+  if (count === 0) {
+    orderForm.hidden = true;
+    orderForm.reset();
+    formFeedback.textContent = "";
+  }
 
   if (count === 0) {
     cartStatus.textContent = "Корзина пуста. Добавьте книги из каталога, чтобы собрать заказ.";
@@ -110,6 +119,45 @@ function renderCart() {
     cartItems.append(item);
   }
 }
+
+checkoutOpen.addEventListener("click", () => {
+  if (cart.size === 0) return;
+  orderForm.hidden = false;
+  formFeedback.textContent = "";
+  orderForm.querySelector("input").focus();
+});
+
+orderForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  formFeedback.textContent = "";
+  const fields = Array.from(orderForm.elements).filter((element) => element instanceof HTMLInputElement);
+  for (const field of fields) {
+    field.value = field.value.trim();
+    if (!field.checkValidity()) {
+      field.reportValidity();
+      formFeedback.textContent = "Проверьте заполнение всех полей.";
+      field.focus();
+      return;
+    }
+  }
+  const phone = orderForm.elements.namedItem("phone");
+  const digits = phone.value.replace(/\D/g, "");
+  if (digits.length < 10 || digits.length > 15) {
+    phone.setCustomValidity("Введите номер телефона с 10–15 цифрами.");
+    phone.reportValidity();
+    phone.focus();
+    formFeedback.textContent = "Введите корректный контактный телефон.";
+    phone.setCustomValidity("");
+    return;
+  }
+  announce("Заказ создан!");
+  orderForm.reset();
+  orderForm.hidden = true;
+  cart.clear();
+  persistCart();
+  renderCart();
+  announce("Заказ создан!");
+});
 
 function changeQuantity(id, quantity) {
   const book = window.books.find((item) => item.id === id);

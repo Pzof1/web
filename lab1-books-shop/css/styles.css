@@ -49,10 +49,25 @@ button:focus-visible, a:focus-visible { outline: 3px solid #bb8b45; outline-offs
 .remove-button:hover, .remove-button:focus-visible { background: #8a3f35; }
 .cart-summary { display: flex; justify-content: space-between; margin-top: 18px; padding: 20px 24px; background: #e9eee5; font-size: 1.1rem; }
 .cart-feedback { min-height: 1.3em; margin: 12px 0 0; color: var(--accent); font-size: .9rem; }
+.checkout-actions { display: flex; justify-content: flex-end; margin-top: 12px; }
+.checkout-button, .submit-order { padding: 12px 18px; background: var(--accent); color: #fff; font-weight: 600; }
+.checkout-button:disabled { cursor: not-allowed; opacity: .45; }
+.order-form { margin-top: 22px; padding: 24px; background: #fff; }
+.order-form[hidden] { display: none; }
+.order-form h3 { margin: 0 0 18px; font: 600 1.35rem "Playfair Display", serif; }
+.order-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.order-fields label { display: grid; gap: 7px; color: var(--muted); font-size: .85rem; font-weight: 600; }
+.order-fields input { width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 0; background: var(--paper); color: var(--ink); font: inherit; }
+.order-fields input:focus-visible { outline: 3px solid #bb8b45; outline-offset: 2px; }
+.order-fields input:invalid:not(:placeholder-shown) { border-color: #a45a4f; }
+.address-field { grid-column: 1 / -1; }
+.form-feedback { min-height: 1.3em; margin: 14px 0; color: #8a3f35; font-size: .9rem; }
+.submit-order { min-width: 190px; }
+.submit-order:hover, .submit-order:focus-visible { background: #314d39; }
 .about { padding-top: 30px; padding-bottom: 80px; }
 .about h2 { margin-bottom: 12px; }
 .about > p:last-child { max-width: 520px; color: var(--muted); line-height: 1.7; }
 .site-footer { padding: 24px 7vw; display: flex; justify-content: space-between; border-top: 1px solid var(--line); color: var(--muted); font-size: .82rem; }
 @media (max-width: 900px) { .book-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .intro { min-height: 340px; } .cart-item { grid-template-columns: minmax(140px, 1fr) auto auto; gap: 14px; } .remove-button { grid-column: 2 / 4; justify-self: end; } }
-@media (max-width: 560px) { .site-header { min-height: 66px; padding: 0 5vw; } nav { gap: .85rem; font-size: .8rem; } .brand { font-size: 1.5rem; } .cart-link { font-size: .8rem; } .intro { min-height: 320px; padding: 70px 7vw 54px; } .section-wrap { padding: 52px 5vw; } .section-heading { align-items: start; gap: 12px; flex-direction: column; } .muted { margin: 0; } .book-grid { gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); } .book-details { padding: 13px 12px; } .book-details h3 { font-size: 1.05rem; } .book-author { font-size: .8rem; } .book-footer { align-items: start; flex-direction: column; } button { width: 100%; } .cart-item { grid-template-columns: 1fr auto; gap: 14px; padding: 18px; } .cart-item-description { grid-column: 1 / -1; } .cart-item-controls { grid-column: 1; } .cart-line-total { grid-column: 2; grid-row: 2; } .remove-button { grid-column: 1 / -1; justify-self: stretch; } .site-footer { padding: 20px 5vw; gap: 10px; flex-direction: column; } }
+@media (max-width: 560px) { .site-header { min-height: 66px; padding: 0 5vw; } nav { gap: .85rem; font-size: .8rem; } .brand { font-size: 1.5rem; } .cart-link { font-size: .8rem; } .intro { min-height: 320px; padding: 70px 7vw 54px; } .section-wrap { padding: 52px 5vw; } .section-heading { align-items: start; gap: 12px; flex-direction: column; } .muted { margin: 0; } .book-grid { gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); } .book-details { padding: 13px 12px; } .book-details h3 { font-size: 1.05rem; } .book-author { font-size: .8rem; } .book-footer { align-items: start; flex-direction: column; } button { width: 100%; } .cart-item { grid-template-columns: 1fr auto; gap: 14px; padding: 18px; } .cart-item-description { grid-column: 1 / -1; } .cart-item-controls { grid-column: 1; } .cart-line-total { grid-column: 2; grid-row: 2; } .remove-button { grid-column: 1 / -1; justify-self: stretch; } .order-form { padding: 18px; } .order-fields { grid-template-columns: 1fr; } .address-field { grid-column: auto; } .checkout-actions { justify-content: stretch; } .checkout-button, .submit-order { width: 100%; } .site-footer { padding: 20px 5vw; gap: 10px; flex-direction: column; } }
 @media (max-width: 360px) { .book-grid { grid-template-columns: 1fr; } }

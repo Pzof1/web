@@ -42,6 +42,18 @@
         <ul class="cart-items" id="cart-items" aria-label="Книги в корзине"></ul>
         <div class="cart-summary" hidden><span>Итого</span><strong id="cart-total">0 ₽</strong></div>
         <p class="cart-feedback" id="cart-feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <div class="checkout-actions"><button class="checkout-button" id="checkout-open" type="button" disabled>Оформить заказ</button></div>
+        <form class="order-form" id="order-form" hidden novalidate aria-labelledby="order-title">
+          <h3 id="order-title">Доставка</h3>
+          <div class="order-fields">
+            <label>Имя<input name="firstName" autocomplete="given-name" required minlength="2" maxlength="50" pattern="[\p{L} '’ʼ-]+" title="Используйте буквы, пробел, дефис или апостроф"></label>
+            <label>Фамилия<input name="lastName" autocomplete="family-name" required minlength="2" maxlength="60" pattern="[\p{L} '’ʼ-]+" title="Используйте буквы, пробел, дефис или апостроф"></label>
+            <label class="address-field">Адрес доставки<input name="address" autocomplete="street-address" required minlength="8" maxlength="160"></label>
+            <label>Контактный телефон<input name="phone" type="tel" autocomplete="tel" inputmode="tel" required minlength="7" maxlength="20" pattern="[+0-9() -]+" placeholder="+7 900 123-45-67"></label>
+          </div>
+          <p class="form-feedback" id="form-feedback" role="alert" aria-live="polite"></p>
+          <button class="submit-order" type="submit">Создать заказ</button>
+        </form>
       </section>
 
       <section class="about section-wrap" id="about" aria-labelledby="about-title">
