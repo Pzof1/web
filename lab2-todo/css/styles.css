@@ -29,6 +29,20 @@ button { cursor: pointer; }
 .task-count { margin: 0; color: #738179; font-size: .85rem; }
 .task-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
 .task { display: flex; justify-content: space-between; gap: 16px; align-items: center; padding: 14px 16px; border: 1px solid #e4eae3; border-radius: 12px; background: #fbfcfa; }
+.task__details { min-width: 0; }
+.task__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; align-items: center; }
+.task__complete { display: inline-flex; gap: 6px; align-items: center; color: #516259; font-size: .82rem; }
+.task__complete input { width: 18px; height: 18px; accent-color: #245c4b; }
+.button--secondary, .button--danger { min-height: 36px; padding: 0 12px; font-size: .82rem; }
+.button--secondary { border: 1px solid #d8e0d8; color: #355747; background: #fff; }
+.button--secondary:hover { background: #eef4ef; }
+.button--danger { color: #8b342e; background: #f8eae8; }
+.button--danger:hover { background: #f1d9d6; }
+.task--completed { background: #f3f7f2; }
+.task__title--completed { color: #7b8980; text-decoration: line-through; }
+.task-edit-form { display: grid; width: 100%; grid-template-columns: minmax(0, 1fr) minmax(145px, .6fr) auto auto; gap: 8px; }
+.task-edit-form input { min-width: 0; min-height: 40px; padding: 8px 10px; border: 1px solid #d8e0d8; border-radius: 8px; }
+.task-edit-form input:focus { outline: 3px solid #cce2d4; border-color: #56806e; }
 .task__title { margin: 0; color: #263b30; font-weight: 650; overflow-wrap: anywhere; }
 .task__date { margin: 5px 0 0; color: #748179; font-size: .82rem; }
 .task__empty { margin: 0; padding: 20px; border: 1px dashed #ced9ce; border-radius: 12px; color: #718077; text-align: center; }
@@ -36,5 +50,7 @@ button { cursor: pointer; }
 @media (max-width: 580px) {
   .page { padding: 40px 0; }
   .task-form { grid-template-columns: 1fr; }
-  .button { width: 100%; }
+  .task { align-items: flex-start; flex-direction: column; }
+  .task__actions { justify-content: flex-start; }
+  .task-edit-form { grid-template-columns: 1fr; }
 }
