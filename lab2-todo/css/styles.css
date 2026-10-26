@@ -24,15 +24,25 @@ button { cursor: pointer; }
 .button { min-height: 46px; padding: 0 18px; border: 0; border-radius: 10px; color: #fff; background: #245c4b; font-weight: 700; }
 .button:hover { background: #194737; }
 .feedback { min-height: 1.4em; margin: 10px 0 0; color: #a13c33; font-size: .88rem; }
+.task-controls { display: grid; grid-template-columns: minmax(0, 1.2fr) repeat(2, minmax(145px, .8fr)); gap: 12px; margin-top: 20px; }
+.control-field { display: grid; gap: 7px; color: #516259; font-size: .8rem; font-weight: 650; }
+.control-field input, .control-field select { width: 100%; min-width: 0; min-height: 42px; padding: 8px 10px; border: 1px solid #d8e0d8; border-radius: 9px; color: #21332c; background: #fff; }
+.control-field input:focus, .control-field select:focus { outline: 3px solid #cce2d4; border-color: #56806e; }
 .list-heading { display: flex; justify-content: space-between; gap: 16px; align-items: baseline; margin: 28px 0 12px; }
 .list-heading h2 { margin: 0; color: #183b30; font-size: 1.05rem; }
 .task-count { margin: 0; color: #738179; font-size: .85rem; }
 .task-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
 .task { display: flex; justify-content: space-between; gap: 16px; align-items: center; padding: 14px 16px; border: 1px solid #e4eae3; border-radius: 12px; background: #fbfcfa; }
+.task[draggable="true"] { cursor: grab; }
+.task[draggable="true"]:active { cursor: grabbing; }
+.task--dragging { opacity: .45; }
+.task--drop-before { box-shadow: inset 0 3px #56806e; }
+.task--drop-after { box-shadow: inset 0 -3px #56806e; }
 .task__details { min-width: 0; }
 .task__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; align-items: center; }
 .task__complete { display: inline-flex; gap: 6px; align-items: center; color: #516259; font-size: .82rem; }
 .task__complete input { width: 18px; height: 18px; accent-color: #245c4b; }
+.task__drag-handle { color: #718077; font-size: .76rem; white-space: nowrap; }
 .button--secondary, .button--danger { min-height: 36px; padding: 0 12px; font-size: .82rem; }
 .button--secondary { border: 1px solid #d8e0d8; color: #355747; background: #fff; }
 .button--secondary:hover { background: #eef4ef; }
@@ -46,10 +56,12 @@ button { cursor: pointer; }
 .task__title { margin: 0; color: #263b30; font-weight: 650; overflow-wrap: anywhere; }
 .task__date { margin: 5px 0 0; color: #748179; font-size: .82rem; }
 .task__empty { margin: 0; padding: 20px; border: 1px dashed #ced9ce; border-radius: 12px; color: #718077; text-align: center; }
+.drag-hint { margin: 10px 0; color: #718077; font-size: .78rem; line-height: 1.5; }
 
 @media (max-width: 580px) {
   .page { padding: 40px 0; }
   .task-form { grid-template-columns: 1fr; }
+  .task-controls { grid-template-columns: 1fr; }
   .task { align-items: flex-start; flex-direction: column; }
   .task__actions { justify-content: flex-start; }
   .task-edit-form { grid-template-columns: 1fr; }

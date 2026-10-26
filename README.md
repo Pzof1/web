@@ -1,26 +1,37 @@
-# Web programming labs
+# Лабораторные по веб-программированию
 
-Two independent student projects for the Web Programming course:
+В репозитории находятся две самостоятельные учебные работы на HTML, CSS и чистом JavaScript.
 
-- `lab1-books-shop/` — responsive book shop with a persistent cart, validated order form, [lab report](lab1-books-shop/REPORT.md), and [defense guide](lab1-books-shop/DEFENSE.md).
-- `lab2-todo/` — task manager built with plain JavaScript and DOM APIs.
+| Работа | Приложение | Документы |
+| --- | --- | --- |
+| Лабораторная 1 | [Книжный магазин](lab1-books-shop/) | [README](lab1-books-shop/README.md), [отчёт](lab1-books-shop/REPORT.md), [подготовка к защите](lab1-books-shop/DEFENSE.md) |
+| Лабораторная 2 | [ToDo](lab2-todo/) | [README](lab2-todo/README.md), [отчёт](lab2-todo/REPORT.md), [подготовка к защите](lab2-todo/DEFENSE.md) |
 
-Both projects use HTML, CSS, and vanilla JavaScript. The work follows the written lab requirements and the instructor's shared review notes: keep assets organized, include a README and favicon, avoid `innerHTML` for building elements, and leave out test dialogs and unused code.
+## Открыть приложения
 
-## Work plan
+После успешной публикации GitHub Pages обе работы доступны со [стартовой страницы](https://pzof1.github.io/web/): [книжный магазин](https://pzof1.github.io/web/lab1-books-shop/) и [ToDo](https://pzof1.github.io/web/lab2-todo/).
 
-Both labs will be developed in small, reviewable milestones on the single feature branch `feat/web-labs`. The current schedule (Moscow time) is:
+## Запуск локально
 
-- Saturday, 17 October: Books shop commits at 12:17, 14:58, and 17:42; ToDo commit at 13:32.
-- Monday, 19 October: Books shop final commit; ToDo commits at 13:58, 17:15, and 20:27.
+Из корня репозитория запустите сервер:
 
-Each scheduled run should produce one real, reviewable commit and request an independent subagent review. No artificial bugs or activity are introduced. The final ToDo step checks both projects, prepares GitHub Pages, and merges the one feature branch into `main` once if verification passes.
+```sh
+python3 -m http.server 8000
+```
 
-## ToDo progress
+Откройте `http://localhost:8000/`. На стартовой странице выберите приложение. Для прямого запуска можно открыть `http://localhost:8000/lab1-books-shop/` или `http://localhost:8000/lab2-todo/`.
 
-- Commit 1: dynamic page shell, DOM-rendered task list, and task creation with a title and date. See [`lab2-todo/README.md`](lab2-todo/README.md) for the current stage and run instructions.
-- Later commits: editing and deleting tasks, completion state, status filtering, search, drag-and-drop ordering, and localStorage persistence.
+## Содержание работ
 
-## Projects
+- **Книжный магазин:** адаптивный каталог, корзина с количеством и итогом, сохранение состояния в `localStorage`, форма заказа с проверкой полей.
+- **ToDo:** динамический DOM-интерфейс, создание, изменение, удаление и завершение задач; поиск, фильтр статуса, сортировка по дате, перетаскивание в ручном режиме и сохранение порядка в `localStorage`.
 
-The individual lab READMEs document how to run each project and its features. Lab 1 includes a first-person report and a defense walkthrough.
+Обе работы обходятся без CSS- и JavaScript-фреймворков. История Git содержит этапы разработки. ToDo следует требованиям [задания лабораторной 2](https://github.com/Dasha2101/WEB2025Q26LB2): HTML содержит каркас без элементов интерфейса, а интерфейс строится через DOM API.
+
+## Замечания преподавателя
+
+В доступных заметках к проекту отмечены следующие пункты для самопроверки: хранить ресурсы в `assets/`, иметь README и favicon, не собирать элементы через `innerHTML`, удалить тестовые диалоги и неиспользуемый код. Перед сдачей проверьте оба приложения в браузере на настольной и мобильной ширине; в отчётах не следует отмечать непроведённые проверки или добавлять неподтверждённые скриншоты.
+
+## Публикация
+
+Workflow [`.github/workflows/pages.yml`](.github/workflows/pages.yml) публикует корень репозитория через GitHub Pages при отправке изменений в `main`. Если публикация не стартует автоматически, владелец репозитория должен один раз выбрать **Settings → Pages → Build and deployment → Source → GitHub Actions**. Адрес сайта: <https://pzof1.github.io/web/>.

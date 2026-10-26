@@ -14,10 +14,15 @@ function loadTasks() {
     const savedTasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
     if (!Array.isArray(savedTasks)) return [];
 
+    const usedIds = new Set();
     return savedTasks
-      .filter((task) => task && typeof task.id === 'string'
-        && typeof task.title === 'string' && task.title.trim()
-        && isValidDate(task.date))
+      .filter((task) => {
+        if (!task || typeof task.id !== 'string' || usedIds.has(task.id)
+          || typeof task.title !== 'string' || !task.title.trim()
+          || !isValidDate(task.date)) return false;
+        usedIds.add(task.id);
+        return true;
+      })
       .map((task) => ({
         id: task.id,
         title: task.title.trim().slice(0, 120),
@@ -36,26 +41,6 @@ function createElement(tagName, className, text) {
   if (className) element.className = className;
   if (text !== undefined) element.textContent = text;
   return element;
-}
-
-function saveTasks() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-    feedback.textContent = '';
-  } catch {
-    feedback.textContent = 'Не удалось сохранить задачи в этом браузере.';
-  }
-}
-
-function sortTasks() {
-  tasks.sort((first, second) => first.date.localeCompare(second.date));
-}
-
-function formatDate(date) {
-  const [year, month, day] = date.split('-').map(Number);
-  return new Intl.DateTimeFormat('ru-RU', {
-    day: 'numeric', month: 'long', year: 'numeric',
-  }).format(new Date(year, month - 1, day));
 }
 
 const page = createElement('main', 'page');
@@ -91,26 +76,120 @@ form.append(titleLabel, dateLabel, addButton);
 const feedback = createElement('p', 'feedback');
 feedback.setAttribute('role', 'status');
 feedback.setAttribute('aria-live', 'polite');
+
+const controls = createElement('div', 'task-controls');
+const searchLabel = createElement('label', 'control-field');
+searchLabel.append(createElement('span', '', 'Поиск по названию'));
+const searchInput = createElement('input');
+searchInput.type = 'search';
+searchInput.name = 'search';
+searchInput.placeholder = 'Найти задачу';
+searchInput.setAttribute('aria-label', 'Поиск задач по названию');
+searchLabel.append(searchInput);
+
+const statusLabel = createElement('label', 'control-field');
+statusLabel.append(createElement('span', '', 'Статус'));
+const statusFilter = createElement('select');
+statusFilter.setAttribute('aria-label', 'Фильтр задач по статусу');
+[
+  ['all', 'Все задачи'],
+  ['active', 'Невыполненные'],
+  ['completed', 'Выполненные'],
+].forEach(([value, text]) => {
+  const option = createElement('option', '', text);
+  option.value = value;
+  statusFilter.append(option);
+});
+statusLabel.append(statusFilter);
+
+const sortLabel = createElement('label', 'control-field');
+sortLabel.append(createElement('span', '', 'Порядок'));
+const sortMode = createElement('select');
+sortMode.setAttribute('aria-label', 'Сортировка задач');
+[
+  ['manual', 'Вручную'],
+  ['date-asc', 'По дате: сначала ранние'],
+  ['date-desc', 'По дате: сначала поздние'],
+].forEach(([value, text]) => {
+  const option = createElement('option', '', text);
+  option.value = value;
+  sortMode.append(option);
+});
+sortLabel.append(sortMode);
+controls.append(searchLabel, statusLabel, sortLabel);
+
 const listHeading = createElement('div', 'list-heading');
 const listTitle = createElement('h2', '', 'Ваши задачи');
 listTitle.id = 'list-title';
 const count = createElement('p', 'task-count');
 listHeading.append(listTitle, count);
+const dragHint = createElement('p', 'drag-hint', 'В режиме «Вручную» перетаскивайте строки задач. Чтобы изменить общий порядок, очистите поиск и выберите «Все задачи».');
 const list = createElement('ul', 'task-list');
 list.setAttribute('aria-labelledby', 'list-title');
 
+function saveTasks() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+    feedback.textContent = '';
+    return true;
+  } catch {
+    feedback.textContent = 'Не удалось сохранить задачи в этом браузере.';
+    return false;
+  }
+}
+
+function formatDate(date) {
+  const [year, month, day] = date.split('-').map(Number);
+  return new Intl.DateTimeFormat('ru-RU', {
+    day: 'numeric', month: 'long', year: 'numeric',
+  }).format(new Date(year, month - 1, day));
+}
+
+function getVisibleTasks() {
+  const query = searchInput.value.trim().toLocaleLowerCase('ru');
+  const visibleTasks = tasks.filter((task) => {
+    const matchesSearch = task.title.toLocaleLowerCase('ru').includes(query);
+    const matchesStatus = statusFilter.value === 'all'
+      || (statusFilter.value === 'completed' && task.completed)
+      || (statusFilter.value === 'active' && !task.completed);
+    return matchesSearch && matchesStatus;
+  });
+
+  if (sortMode.value === 'date-asc') {
+    return visibleTasks.sort((first, second) => first.date.localeCompare(second.date));
+  }
+  if (sortMode.value === 'date-desc') {
+    return visibleTasks.sort((first, second) => second.date.localeCompare(first.date));
+  }
+  return visibleTasks;
+}
+
+function canReorder() {
+  return sortMode.value === 'manual'
+    && statusFilter.value === 'all'
+    && searchInput.value.trim() === '';
+}
+
 function renderTasks() {
   list.replaceChildren();
-  count.textContent = `Всего: ${tasks.length}`;
+  const visibleTasks = getVisibleTasks();
+  count.textContent = `Показано: ${visibleTasks.length} из ${tasks.length}`;
+  dragHint.hidden = !canReorder() || tasks.length < 2;
 
-  if (tasks.length === 0) {
-    list.append(createElement('li', 'task__empty', 'Пока задач нет. Добавьте первую выше.'));
+  if (visibleTasks.length === 0) {
+    const message = tasks.length === 0
+      ? 'Пока задач нет. Добавьте первую выше.'
+      : 'Нет задач по выбранным условиям.';
+    list.append(createElement('li', 'task__empty', message));
     return;
   }
 
-  tasks.forEach((task) => {
+  const reorderAllowed = canReorder() && tasks.length > 1;
+  visibleTasks.forEach((task) => {
     const item = createElement('li', task.completed ? 'task task--completed' : 'task');
     item.dataset.taskId = task.id;
+    item.draggable = reorderAllowed;
+
     const details = createElement('div', 'task__details');
     const taskName = createElement('p', 'task__title', task.title);
     if (task.completed) taskName.classList.add('task__title--completed');
@@ -143,10 +222,67 @@ function renderTasks() {
       renderTasks();
     });
 
+    const dragHandle = createElement('span', 'task__drag-handle', reorderAllowed ? '↕ Перетащить' : 'Порядок');
+    dragHandle.setAttribute('aria-hidden', 'true');
     actions.append(completeLabel, editButton, deleteButton);
+    if (reorderAllowed) actions.prepend(dragHandle);
     item.append(details, actions);
+
+    if (reorderAllowed) {
+      item.addEventListener('dragstart', (event) => {
+        item.classList.add('task--dragging');
+        event.dataTransfer.effectAllowed = 'move';
+        event.dataTransfer.setData('text/plain', task.id);
+      });
+      item.addEventListener('dragend', () => {
+        item.classList.remove('task--dragging');
+        item.classList.remove('task--drop-before', 'task--drop-after');
+        if (draggedTaskId) {
+          draggedTaskId = '';
+          renderTasks();
+        }
+      });
+      item.addEventListener('dragover', (event) => {
+        if (!draggedTaskId || draggedTaskId === task.id || !canReorder()) return;
+        event.preventDefault();
+        const rect = item.getBoundingClientRect();
+        const dropAfter = event.clientY > rect.top + rect.height / 2;
+        item.classList.toggle('task--drop-before', !dropAfter);
+        item.classList.toggle('task--drop-after', dropAfter);
+      });
+      item.addEventListener('dragleave', () => {
+        item.classList.remove('task--drop-before', 'task--drop-after');
+      });
+      item.addEventListener('drop', (event) => {
+        if (!draggedTaskId || draggedTaskId === task.id || !canReorder()) return;
+        event.preventDefault();
+        const rect = item.getBoundingClientRect();
+        const dropAfter = event.clientY > rect.top + rect.height / 2;
+        const draggedItem = list.querySelector(`[data-task-id="${CSS.escape(draggedTaskId)}"]`);
+        if (!draggedItem) return;
+        if (dropAfter) item.after(draggedItem);
+        else item.before(draggedItem);
+        commitVisibleOrder();
+      });
+    }
+
     list.append(item);
   });
+}
+
+let draggedTaskId = '';
+
+function commitVisibleOrder() {
+  const reorderedIds = Array.from(list.querySelectorAll('[data-task-id]'))
+    .map((item) => item.dataset.taskId);
+  const byId = new Map(tasks.map((task) => [task.id, task]));
+  const reorderedTasks = reorderedIds.map((id) => byId.get(id)).filter(Boolean);
+  tasks.length = 0;
+  reorderedTasks.forEach((task) => tasks.push(task));
+  draggedTaskId = '';
+  const saved = saveTasks();
+  renderTasks();
+  if (saved) feedback.textContent = 'Новый порядок сохранён.';
 }
 
 function startEditing(task) {
@@ -177,13 +313,12 @@ function startEditing(task) {
   editForm.addEventListener('submit', (event) => {
     event.preventDefault();
     const nextTitle = editTitle.value.trim();
-    if (!nextTitle || !editDate.value) {
-      feedback.textContent = 'Укажите название и дату задачи.';
+    if (!nextTitle || !isValidDate(editDate.value)) {
+      feedback.textContent = 'Укажите название и корректную дату задачи.';
       return;
     }
     task.title = nextTitle;
     task.date = editDate.value;
-    sortTasks();
     saveTasks();
     renderTasks();
   });
@@ -195,26 +330,44 @@ function startEditing(task) {
 form.addEventListener('submit', (event) => {
   event.preventDefault();
   const taskTitle = titleInput.value.trim();
-  if (!taskTitle || !dateInput.value) {
-    feedback.textContent = 'Укажите название и дату задачи.';
+  if (!taskTitle || !isValidDate(dateInput.value)) {
+    feedback.textContent = 'Укажите название и корректную дату задачи.';
     return;
   }
 
   tasks.push({
     id: globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`,
-    title: taskTitle,
+    title: taskTitle.slice(0, 120),
     date: dateInput.value,
     completed: false,
   });
-  sortTasks();
   saveTasks();
   form.reset();
   titleInput.focus();
   renderTasks();
 });
 
-panel.append(form, feedback, listHeading, list);
+searchInput.addEventListener('input', renderTasks);
+statusFilter.addEventListener('change', renderTasks);
+sortMode.addEventListener('change', renderTasks);
+
+list.addEventListener('dragstart', (event) => {
+  const item = event.target.closest('[data-task-id]');
+  if (item && canReorder()) draggedTaskId = item.dataset.taskId;
+});
+list.addEventListener('dragover', (event) => {
+  if (draggedTaskId && canReorder() && event.target === list) event.preventDefault();
+});
+list.addEventListener('drop', (event) => {
+  if (!draggedTaskId || !canReorder() || event.target !== list) return;
+  event.preventDefault();
+  const draggedItem = list.querySelector(`[data-task-id="${CSS.escape(draggedTaskId)}"]`);
+  if (!draggedItem) return;
+  list.append(draggedItem);
+  commitVisibleOrder();
+});
+
+panel.append(form, feedback, controls, listHeading, dragHint, list);
 page.append(eyebrow, title, intro, panel);
 document.body.append(page);
-sortTasks();
 renderTasks();
