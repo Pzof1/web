@@ -81,12 +81,12 @@ feedback.setAttribute('aria-live', 'polite');
 
 const controls = createElement('div', 'task-controls');
 const searchLabel = createElement('label', 'control-field');
-searchLabel.append(createElement('span', '', 'Поиск по названию'));
+searchLabel.append(createElement('span', '', 'Поиск по названию или дате'));
 const searchInput = createElement('input');
 searchInput.type = 'search';
 searchInput.name = 'search';
 searchInput.placeholder = 'Найти задачу';
-searchInput.setAttribute('aria-label', 'Поиск задач по названию');
+searchInput.setAttribute('aria-label', 'Поиск задач по названию или дате');
 searchLabel.append(searchInput);
 
 const statusLabel = createElement('label', 'control-field');
@@ -150,7 +150,9 @@ function formatDate(date) {
 function getVisibleTasks() {
   const query = searchInput.value.trim().toLocaleLowerCase('ru');
   const visibleTasks = tasks.filter((task) => {
-    const matchesSearch = task.title.toLocaleLowerCase('ru').includes(query);
+    const searchableDate = `${task.date} ${formatDate(task.date)}`.toLocaleLowerCase('ru');
+    const matchesSearch = task.title.toLocaleLowerCase('ru').includes(query)
+      || searchableDate.includes(query);
     const matchesStatus = statusFilter.value === 'all'
       || (statusFilter.value === 'completed' && task.completed)
       || (statusFilter.value === 'active' && !task.completed);
