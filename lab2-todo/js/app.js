@@ -44,6 +44,8 @@ function createElement(tagName, className, text) {
 }
 
 const page = createElement('main', 'page');
+const homeLink = createElement('a', 'home-link', '← На главную');
+homeLink.href = '../';
 const eyebrow = createElement('p', 'page__eyebrow', 'Личный планер');
 const title = createElement('h1', 'page__title', 'Список задач');
 const intro = createElement('p', 'page__intro', 'Запишите важное и задайте дату, чтобы держать планы под рукой.');
@@ -368,6 +370,6 @@ list.addEventListener('drop', (event) => {
 });
 
 panel.append(form, feedback, controls, listHeading, dragHint, list);
-page.append(eyebrow, title, intro, panel);
+page.append(homeLink, eyebrow, title, intro, panel);
 document.body.append(page);
 renderTasks();

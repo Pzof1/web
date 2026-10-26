@@ -13,6 +13,8 @@ button, input { font: inherit; }
 button { cursor: pointer; }
 
 .page { width: min(100% - 32px, 720px); margin: 0 auto; padding: 64px 0; }
+.home-link { display: inline-flex; align-items: center; min-height: 40px; margin-bottom: 22px; padding: 8px 14px; border: 1px solid #245c4b; border-radius: 9px; color: #245c4b; font-size: .88rem; font-weight: 700; text-decoration: none; }
+.home-link:hover, .home-link:focus-visible { color: #fff; background: #245c4b; }
 .page__eyebrow { margin: 0 0 10px; color: #56806e; font-size: .78rem; font-weight: 750; letter-spacing: .13em; text-transform: uppercase; }
 .page__title { margin: 0; color: #183b30; font-size: clamp(2.2rem, 7vw, 3.5rem); letter-spacing: -.055em; }
 .page__intro { margin: 12px 0 30px; color: #66766e; line-height: 1.6; }
