@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Игра 2048 на чистых HTML, CSS и JavaScript.">
+    <title>2048 — лабораторная 3</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/app.js" defer></script>
+  </head>
+  <body>
+    <main class="game-page">
+      <a class="home-link" href="../">← На главную</a>
+      <header class="game-header">
+        <div>
+          <p class="eyebrow">Лабораторная работа 3</p>
+          <h1>2048</h1>
+          <p class="game-intro">Соединяйте одинаковые числа и соберите плитку 2048.</p>
+        </div>
+        <section class="score-card" aria-label="Текущий счёт">
+          <span>Счёт</span>
+          <output id="score" aria-live="polite">0</output>
+        </section>
+      </header>
+
+      <section class="game-panel" aria-label="Игра">
+        <div id="board" class="board" role="grid" aria-label="Игровое поле 4 на 4">
+          <div class="board__cells" aria-hidden="true"></div>
+          <div id="tiles" class="board__tiles"></div>
+        </div>
+
+        <p id="game-message" class="game-message" role="status" aria-live="polite">
+          Используйте стрелки на клавиатуре, кнопки или свайп.
+        </p>
+
+        <div id="mobile-controls" class="mobile-controls" aria-label="Управление игрой">
+          <button class="direction-button direction-button--up" type="button" data-direction="up" aria-label="Вверх">↑</button>
+          <button class="direction-button" type="button" data-direction="left" aria-label="Влево">←</button>
+          <button class="direction-button" type="button" data-direction="down" aria-label="Вниз">↓</button>
+          <button class="direction-button" type="button" data-direction="right" aria-label="Вправо">→</button>
+        </div>
+
+        <div class="game-actions">
+          <button id="new-game" class="button" type="button">Начать заново</button>
+        </div>
+      </section>
+
+      <section id="game-over" class="game-over" role="dialog" aria-modal="true" aria-labelledby="game-over-title" hidden>
+        <div class="game-over__card">
+          <p class="eyebrow">Партия завершена</p>
+          <h2 id="game-over-title">Больше нет ходов</h2>
+          <p>Ваш счёт: <strong id="final-score">0</strong></p>
+          <button id="play-again" class="button" type="button">Новая партия</button>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
