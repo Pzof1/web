@@ -6,13 +6,69 @@ const message = document.querySelector("#game-message");
 const gameOverDialog = document.querySelector("#game-over");
 const finalScore = document.querySelector("#final-score");
 const mobileControls = document.querySelector("#mobile-controls");
+const undoButton = document.querySelector("#undo");
 const tileElements = new Map();
+const STORAGE_KEY = "lab3-2048-session-v1";
 
 let nextTileId = 1;
 let board = [];
 let score = 0;
 let gameOver = false;
 let touchStart = null;
+let undoState = null;
+
+function snapshot() {
+  return { board: board.map((tile) => tile ? tile.value : null), score };
+}
+
+function validSnapshot(value) {
+  return value && Array.isArray(value.board) && value.board.length === SIZE * SIZE
+    && value.board.every((tile) => tile === null || (Number.isSafeInteger(tile) && tile >= 2 && (tile & (tile - 1)) === 0))
+    && Number.isSafeInteger(value.score) && value.score >= 0;
+}
+
+function saveSession() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...snapshot(), undo: undoState }));
+  } catch (error) {
+    message.textContent = "Не удалось сохранить партию в этом браузере.";
+    console.error("Не удалось сохранить партию 2048:", error);
+  }
+}
+
+function restoreSession() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    const saved = JSON.parse(raw);
+    if (!validSnapshot(saved) || saved.board.every((tile) => tile === null)) throw new Error("Некорректные данные партии");
+    board = saved.board.map((value) => value === null ? null : createTile(value));
+    score = saved.score;
+    undoState = validSnapshot(saved.undo) ? saved.undo : null;
+    setGameOver(!hasAvailableMove());
+    renderBoard();
+    undoButton.disabled = gameOver || !undoState;
+    message.textContent = "Партия восстановлена.";
+    return true;
+  } catch (error) {
+    message.textContent = "Сохранённая партия повреждена или недоступна.";
+    console.error("Не удалось восстановить партию 2048:", error);
+    try { localStorage.removeItem(STORAGE_KEY); } catch (removeError) { console.error("Не удалось удалить повреждённую партию:", removeError); }
+    return false;
+  }
+}
+
+function restoreUndo() {
+  if (gameOver || !undoState) return;
+  board = undoState.board.map((value) => value === null ? null : createTile(value));
+  score = undoState.score;
+  undoState = null;
+  setGameOver(false);
+  renderBoard();
+  undoButton.disabled = true;
+  message.textContent = "Последний ход отменён.";
+  saveSession();
+}
 
 function createTile(value, fresh = false) {
   return { id: nextTileId++, value, fresh, merged: false };
@@ -183,6 +239,7 @@ function move(direction) {
   }
   if (!changed) return;
 
+  undoState = snapshot();
   score += gained;
   const spawnCount = 1 + (Math.random() < 0.12 ? 1 : 0);
   for (let count = 0; count < spawnCount; count += 1) spawnTile();
@@ -190,16 +247,21 @@ function move(direction) {
   renderBoard(previousPositions);
   message.textContent = gained > 0 ? `Хороший ход! +${gained} очков.` : "Ход принят.";
   setGameOver(!hasAvailableMove());
+  undoButton.disabled = gameOver;
+  saveSession();
 }
 
 function startNewGame() {
   board = makeEmptyBoard();
   score = 0;
+  undoState = null;
   setGameOver(false);
   const startingTileCount = 1 + Math.floor(Math.random() * 3);
   for (let count = 0; count < startingTileCount; count += 1) spawnTile();
   message.textContent = "Используйте стрелки на клавиатуре, кнопки или свайп.";
   renderBoard();
+  undoButton.disabled = true;
+  saveSession();
 }
 
 function directionFromKey(key) {
@@ -209,6 +271,7 @@ function directionFromKey(key) {
 createBackgroundCells();
 document.querySelector("#new-game").addEventListener("click", startNewGame);
 document.querySelector("#play-again").addEventListener("click", startNewGame);
+undoButton.addEventListener("click", restoreUndo);
 mobileControls.addEventListener("click", (event) => {
   const button = event.target.closest("[data-direction]");
   if (button) move(button.dataset.direction);
@@ -240,4 +303,4 @@ boardElement.addEventListener("pointerup", (event) => {
 
 boardElement.addEventListener("pointercancel", () => { touchStart = null; });
 
-startNewGame();
+if (!restoreSession()) startNewGame();
