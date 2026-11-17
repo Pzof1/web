@@ -42,8 +42,8 @@ function restoreCart() {
   } catch {
     try {
       localStorage.removeItem(storageKey);
-    } catch {
-      // Storage may be unavailable; keep the catalog usable without persistence.
+    } catch (error) {
+      console.error("Не удалось удалить повреждённые данные корзины из localStorage.", error);
     }
   }
 }
