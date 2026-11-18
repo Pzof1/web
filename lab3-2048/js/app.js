@@ -7,6 +7,10 @@ const gameOverDialog = document.querySelector("#game-over");
 const finalScore = document.querySelector("#final-score");
 const mobileControls = document.querySelector("#mobile-controls");
 const undoButton = document.querySelector("#undo");
+const recordForm = document.querySelector("#record-form");
+const leaderboard = document.querySelector("#leaderboard");
+const mobileControlsElement = mobileControls;
+const RECORDS_KEY = "lab3-2048-leaderboard-v1";
 const tileElements = new Map();
 const STORAGE_KEY = "lab3-2048-session-v1";
 
@@ -226,6 +230,62 @@ function setGameOver(isFinished) {
   }
 }
 
+function getRecords() {
+  try {
+    const records = JSON.parse(localStorage.getItem(RECORDS_KEY) || "[]");
+    return Array.isArray(records) ? records.filter((record) => record && typeof record.name === "string" && Number.isSafeInteger(record.score) && typeof record.date === "string").slice(0, 10) : [];
+  } catch (error) { return []; }
+}
+
+function renderLeaderboard() {
+  const rows = document.querySelector("#leaderboard-rows");
+  rows.replaceChildren();
+  getRecords().forEach((record) => {
+    const row = document.createElement("tr");
+    [record.name, String(record.score), record.date].forEach((value) => {
+      const cell = document.createElement("td");
+      cell.textContent = value;
+      row.append(cell);
+    });
+    rows.append(row);
+  });
+  if (!rows.childElementCount) {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.colSpan = 3;
+    cell.textContent = "Рекордов пока нет.";
+    row.append(cell);
+    rows.append(row);
+  }
+}
+
+recordForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const name = document.querySelector("#player-name").value.trim();
+  if (!name) return;
+  try {
+    const records = [...getRecords(), { name, score, date: new Date().toLocaleDateString("ru-RU") }]
+      .sort((a, b) => b.score - a.score).slice(0, 10);
+    localStorage.setItem(RECORDS_KEY, JSON.stringify(records));
+    recordForm.hidden = true;
+    document.querySelector("#record-confirmation").hidden = false;
+  } catch (error) {
+    message.textContent = "Не удалось сохранить рекорд в этом браузере.";
+  }
+});
+
+document.querySelector("#show-leaderboard").addEventListener("click", () => {
+  renderLeaderboard();
+  leaderboard.hidden = false;
+  recordForm.hidden = true;
+  mobileControlsElement.hidden = true;
+});
+document.querySelector("#hide-leaderboard").addEventListener("click", () => {
+  leaderboard.hidden = true;
+  recordForm.hidden = !document.querySelector("#record-confirmation").hidden;
+  mobileControlsElement.hidden = gameOver;
+});
+
 function move(direction) {
   if (gameOver) return;
   const previousPositions = getTilePositions();
@@ -252,6 +312,10 @@ function move(direction) {
 }
 
 function startNewGame() {
+  recordForm.reset();
+  recordForm.hidden = false;
+  document.querySelector("#record-confirmation").hidden = true;
+  leaderboard.hidden = true;
   board = makeEmptyBoard();
   score = 0;
   undoState = null;

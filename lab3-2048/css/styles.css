@@ -88,3 +88,9 @@ h1 { margin: 0; color: var(--green-dark); font-size: clamp(3.2rem, 14vw, 5rem); 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+.record-form { display: grid; gap: 8px; margin: 16px 0; text-align: left; }
+.record-form input { min-height: 42px; padding: 8px 10px; border: 1px solid #c9cec4; border-radius: 8px; font: inherit; }
+.leaderboard { margin-top: 16px; }
+.leaderboard table { width: 100%; margin: 12px 0; border-collapse: collapse; font-size: .85rem; }
+.leaderboard th, .leaderboard td { padding: 7px 4px; border-bottom: 1px solid #e2ded4; text-align: left; overflow-wrap: anywhere; }
+.leaderboard th:nth-child(2), .leaderboard td:nth-child(2) { text-align: right; }

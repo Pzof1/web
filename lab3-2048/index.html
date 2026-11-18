@@ -52,6 +52,18 @@
           <p class="eyebrow">Партия завершена</p>
           <h2 id="game-over-title">Больше нет ходов</h2>
           <p>Ваш счёт: <strong id="final-score">0</strong></p>
+          <form id="record-form" class="record-form">
+            <label for="player-name">Имя игрока</label>
+            <input id="player-name" name="player" maxlength="40" required autocomplete="name">
+            <button class="button" type="submit">Сохранить результат</button>
+          </form>
+          <p id="record-confirmation" role="status" hidden>Ваш рекорд сохранён.</p>
+          <button id="show-leaderboard" class="button" type="button">Таблица лидеров</button>
+          <section id="leaderboard" class="leaderboard" aria-label="Таблица лидеров" hidden>
+            <h3>Топ-10</h3>
+            <table><thead><tr><th>Имя</th><th>Очки</th><th>Дата</th></tr></thead><tbody id="leaderboard-rows"></tbody></table>
+            <button id="hide-leaderboard" class="button" type="button">Назад</button>
+          </section>
           <button id="play-again" class="button" type="button">Новая партия</button>
         </div>
       </section>
